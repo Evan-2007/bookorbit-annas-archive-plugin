@@ -22,7 +22,7 @@ A BookOrbit indexer plugin that searches [Anna's Archive](https://annas-archive.
 1. Download `index.mjs` from the [latest release](../../releases/latest).
 2. Install it in BookOrbit:
    - Upload it via **Settings > Requests > Add source > Install a plugin**, or
-   - Copy it to `<APP_DATA_PATH>/plugins/indexers/my-source/index.mjs` (`APP_DATA_PATH` is `/data` in Docker).
+   - Copy it to `<APP_DATA_PATH>/plugins/indexers/bookorbit-annas-archive-plugin/index.mjs` (`APP_DATA_PATH` is `/data` in Docker).
 3. fill in the settings below, then click **Test**.
 
 ## Settings
