@@ -19,9 +19,9 @@ import { fastDownloadUrl, libgenDownloadUrl } from './lib/download.mjs';
 
 export default {
   apiVersion: 1,
-  version: '0.1.0',
-  type: 'my-source',
-  label: 'My Source',
+  version: '1.0.0',
+  type: 'bookorbit-annas-archive-plugin',
+  label: "Anna's Archive",
 
   requiresCredential: false,
   credentialKind: null, // 'apiKey' | 'sessionId' | null
