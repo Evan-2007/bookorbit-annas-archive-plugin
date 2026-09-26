@@ -1,0 +1,17 @@
+{
+  "name": "my-source",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "esbuild src/index.mjs --bundle --format=esm --platform=neutral --main-fields=module,main --outfile=dist/index.mjs",
+    "watch": "npm run build -- --watch",
+    "check": "node scripts/check-plugin.mjs",
+    "postbuild": "npm run check"
+  },
+  "devDependencies": {
+    "esbuild": "^0.24.0"
+  },
+  "dependencies": {
+    "cheerio": "^1.2.0"
+  }
+}
