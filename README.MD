@@ -32,4 +32,8 @@ A BookOrbit indexer plugin that searches [Anna's Archive](https://annas-archive.
 | Base URL | The Anna's Archive address to use. Defaults to `https://annas-archive.gl`. |
 | Account Key | Your Anna's Archive secret key, found on your account page. |
 
+## TODO
+
+- [ ] Signed auto updates
+
 
