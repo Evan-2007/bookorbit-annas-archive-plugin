@@ -1,8 +1,8 @@
 {
-    "schemaVersion": 1,
-    "type": "bookorbit-annas-archive-plugin",
-    "version": "1.1.0",
-    "sourceUrl": "https://github.com/Evan-2007/bookorbit-annas-archive-plugin/releases/latest/download/index.mjs",
-    "sha256": "",
-    "signature": ""
+  "schemaVersion": 1,
+  "type": "bookorbit-annas-archive-plugin",
+  "version": "1.2.0",
+  "sourceUrl": "https://github.com/Evan-2007/bookorbit-annas-archive-plugin/releases/download/v1.2.0/index.mjs",
+  "sha256": "23136e8fe8a2ab5a5a04605b82e1a414a97971ca80d05af42d2c118b89311b0e",
+  "signature": "zLhGxS9JAqiKUFuOO1jMaHZmXWJ6t+Lx2blTbjv2/JnazDyz4sC/+RkEESgHXuLczbAipc5d3C4GyNxxyNV/AQ=="
 }
