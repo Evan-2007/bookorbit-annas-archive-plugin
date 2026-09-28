@@ -20,7 +20,7 @@ import { fastDownloadUrl, libgenDownloadUrl } from './lib/download.mjs';
 
 export default {
   apiVersion: 1,
-  version: '1.2.0',
+  version: '1.3.0',
   type: 'bookorbit-annas-archive-plugin',
   label: "Anna's Archive",
 
