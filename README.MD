@@ -34,4 +34,4 @@ A BookOrbit indexer plugin that searches [Anna's Archive](https://annas-archive.
 
 ## TODO
 
-- [ ] Signed auto updates
+- [x] Signed auto updates
