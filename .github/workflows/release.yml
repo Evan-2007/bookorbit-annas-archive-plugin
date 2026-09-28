@@ -25,10 +25,36 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # Also runs scripts/check-plugin.mjs via postbuild.
       - run: pnpm run build
 
+      - name: Check tag matches plugin version
+        run: |
+          VERSION=$(node -e "import('./dist/index.mjs').then(m => console.log(m.default.version))")
+          if [ "v$VERSION" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match plugin version $VERSION in src/index.mjs"
+            exit 1
+          fi
+
+      - name: Sign update
+        env:
+          BOOKORBIT_PLUGIN_SIGNING_KEY: ${{ secrets.BOOKORBIT_PLUGIN_SIGNING_KEY }}
+        run: node scripts/sign-update.mjs "https://github.com/${{ github.repository }}/releases/download/$GITHUB_REF_NAME/index.mjs"
+
+      # The plugin file must be live before the manifest that points at it.
       - name: Create release
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh release create "$GITHUB_REF_NAME" dist/index.mjs --title "$GITHUB_REF_NAME" --generate-notes
+
+      - name: Publish update manifest to main
+        run: |
+          cp updates/*.json "$RUNNER_TEMP/"
+          git fetch origin main
+          git checkout -B main origin/main
+          mkdir -p updates
+          cp "$RUNNER_TEMP"/*.json updates/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898419+github-actions[bot]@users.noreply.github.com"
+          git add updates/
+          git commit -m "Update manifest for $GITHUB_REF_NAME"
+          git push origin main
