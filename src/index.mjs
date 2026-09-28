@@ -15,6 +15,7 @@
  */
 
 import { searchBooks } from './lib/search.mjs';
+import { searchLibgen } from './lib/libgen.mjs';
 import { fastDownloadUrl, libgenDownloadUrl } from './lib/download.mjs';
 
 export default {
@@ -49,7 +50,9 @@ export default {
 ],
 
   async search(query, config, host, signal) {
-    const results = await searchBooks(query, config.settings?.accountKey, config.baseUrl, host, signal);
+    const results =
+      (await searchBooks(query, config.settings?.accountKey?.trim(), config.baseUrl, host, signal)) ??
+      (await searchLibgen(query, host, signal));
     if (signal.aborted) return [];
     return results.map((r) => ({
       guid: r.md5,
@@ -70,7 +73,11 @@ export default {
 
   async test(config, host) {
     try {
-      await searchBooks({ title: 'test', limit: 1 }, config.settings?.accountKey, config.baseUrl, host);
+      const results = await searchBooks({ title: 'test', limit: 1 }, config.settings?.accountKey?.trim(), config.baseUrl, host);
+      if (results === null) {
+        await searchLibgen({ title: 'test', limit: 1 }, host);
+        return { success: true, indexerName: "Anna's Archive (free account: searching Library Genesis)" };
+      }
       return { success: true, indexerName: "Anna's Archive" };
     } catch (err) {
       return { success: false, error: err instanceof Error ? err.message : String(err) };
@@ -82,7 +89,7 @@ export default {
     if (!/^[a-f0-9]{32}$/.test(md5 ?? '')) throw host.fail('error', 'That release has no file');
 
     const url =
-      (await fastDownloadUrl(md5, config.settings?.accountKey, config.baseUrl, host, signal)) ??
+      (await fastDownloadUrl(md5, config.settings?.accountKey?.trim(), config.baseUrl, host, signal)) ??
       (await libgenDownloadUrl(md5, host, signal));
     if (!url) throw host.fail('error', 'No download available: fast download needs a membership and libgen does not have this file');
 

@@ -2,7 +2,7 @@ import { load } from "cheerio/slim";
 
 const FORMAT_RE = /\b(epub|pdf|mobi|azw3|azw|fb2|djvu|cbz|cbr|txt|rtf|doc|docx|lit|htm|html)\b/i;
 
-function clean(text) {
+export function clean(text) {
   return (text || "").replace(/\s+/g, " ").trim();
 }
 
@@ -26,7 +26,7 @@ function parseMeta(text) {
   };
 }
 
-function bareTitle(title) {
+export function bareTitle(title) {
   return clean(title.replace(/\s*[\(\[][^\)\]]*[\)\]]/g, "")) || title;
 }
 

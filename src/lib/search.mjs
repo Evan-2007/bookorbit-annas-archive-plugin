@@ -35,22 +35,35 @@ export async function searchBooks(
     .map((c) => c.split(";")[0].trim())
     .filter((c) => c.startsWith("aa_") && c.includes("="))
     .join("; ");
-  if (!headers.Cookie) throw host.fail("unauthorized", "Anna's Archive rejected the key.");
+  if (!headers.Cookie) {
+    if (login.status === 429) throw host.fail("throttled", "Anna's Archive is rate limiting sign-ins. Try again later.");
+    const page = await login.text().catch(() => "");
+
+    if (/invalid secret key/i.test(page)) throw host.fail("unauthorized", "Anna's Archive rejected the key.");
+    if (login.status === 403 || /ddos-guard|checking your browser/i.test(page)) {
+      throw host.fail("error", `Anna's Archive sign-in was blocked by DDoS-Guard (HTTP ${login.status}).`);
+    }
+    throw host.fail("error", `Anna's Archive sign-in failed (HTTP ${login.status}, no session cookie).`);
+  }
 
   const isbns = [...new Set([isbn13, ...isbn13s].filter(Boolean).map((s) => String(s).replace(/-/g, "")))];
   const seen = new Map();
 
-  for (const isbn of isbns.length ? isbns : [null]) {
+  const queries = isbns.map((isbn) => ({ isbn }));
+  if (title || author) queries.push({ title, author });
+
+  for (const q of queries) {
     const url = new URL(`${baseUrl}/search`);
-    url.searchParams.set("q", isbn ?? "");
+    url.searchParams.set("q", q.isbn ?? "");
     let n = 1;
-    if (title)  { url.searchParams.set(`termtype_${n}`, "title");  url.searchParams.set(`termval_${n++}`, title); }
-    if (author) { url.searchParams.set(`termtype_${n}`, "author"); url.searchParams.set(`termval_${n++}`, author); }
+    if (q.title)  { url.searchParams.set(`termtype_${n}`, "title");  url.searchParams.set(`termval_${n++}`, q.title); }
+    if (q.author) { url.searchParams.set(`termtype_${n}`, "author"); url.searchParams.set(`termval_${n++}`, q.author); }
     if (CONTENT_TYPES[mediaKind]) url.searchParams.set("content", CONTENT_TYPES[mediaKind]);
     if (language)  url.searchParams.set("lang", language);
 
     const resp = await host.fetch(url.toString(), { headers, redirect: "manual", signal });
-    if (resp.status >= 300 && resp.status < 400) throw host.fail("error", "Anna's Archive served a bot check / redirect.");
+
+    if (resp.status >= 300 && resp.status < 400) return null;
     if (resp.status === 429) throw host.fail("throttled", "Anna's Archive is rate limiting requests.");
     if (!resp.ok) throw host.fail("error", `Anna's Archive returned HTTP ${resp.status}`);
 
