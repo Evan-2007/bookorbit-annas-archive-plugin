@@ -32,6 +32,10 @@ export default {
   seedsBack: false, // true only for torrent sources
   defaultBaseUrl: 'https://annas-archive.gl',
   baseUrlHint: "The Anna's Archive address to search.",
+  update: {
+    manifestUrl: 'https://raw.githubusercontent.com/Evan-2007/bookorbit-annas-archive-plugin/main/updates/bookorbit-annas-archive-plugin.json',
+    ed25519PublicKey: 'YGTfGlp3g5Z1jUlwb6n7GssjoTIOmmjQBfVF1h9arEw',
+   },
 
   settingsFields: [
     // {
