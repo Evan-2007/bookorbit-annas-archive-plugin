@@ -50,6 +50,12 @@ export default {
         type: 'string',
         label: 'Account Key',
         hint: 'Your Anna\'s Archive account key. Required for searching and downloading.',
+    },
+    {
+        key: 'fastServersToTry',
+        type: 'string',
+        label: 'Fast download servers to try',
+        hint: 'How many fast download servers to look up at once (1-5, default 2). The first one that is up is used, so a higher number helps when several servers are down at the same time, but every download then makes that many requests to Anna\'s Archive at once.',
     }
 ],
 
@@ -93,7 +99,7 @@ export default {
     if (!/^[a-f0-9]{32}$/.test(md5 ?? '')) throw host.fail('error', 'That release has no file');
 
     const url =
-      (await fastDownloadUrl(md5, config.settings?.accountKey?.trim(), config.baseUrl, host, signal)) ??
+      (await fastDownloadUrl(md5, config.settings?.accountKey?.trim(), config.baseUrl, host, signal, config.settings?.fastServersToTry)) ??
       (await libgenDownloadUrl(md5, host, signal));
     if (!url) throw host.fail('error', 'No download available: fast download needs a membership and libgen does not have this file');
 
